@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: creator_manager_db_container
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}       # app_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # SilneHaslo123!
+      POSTGRES_DB: ${DB_NAME}         # creator_manager_db
+    ports:
+      - "5433:5432" # Mapowanie portu z kontenera na host
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Trwała pamięć dla danych
+
+volumes:
+  postgres_data:
