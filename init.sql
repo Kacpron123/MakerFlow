@@ -1,9 +1,7 @@
 CREATE TABLE users (
    user_id SERIAL PRIMARY KEY,
-   name TEXT NOT NULL,
-   mail TEXT UNIQUE NOT NULL,
-   hash_password TEXT NOT NULL,
-   subscription_status BOOLEAN DEFAULT FALSE
+   username TEXT NOT NULL,
+   password_hash TEXT NOT NULL
    );
 CREATE TABLE groups (
    group_id SERIAL PRIMARY KEY,

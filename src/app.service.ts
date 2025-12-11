@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from './database/database.service';
+import { DatabaseService } from '@database/database.service';
 
 @Injectable()
 export class AppService {
@@ -10,7 +10,7 @@ export class AppService {
   }
   async getUsers() {
     // Logika dostępu do danych należy do serwisu
-    const result = await this.db.query('SELECT user_id, name, mail FROM users;');
+    const result = await this.db.query('SELECT user_id, username FROM users;');
     return result;
   }
 }

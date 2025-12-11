@@ -25,7 +25,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
         await this.pool.query(initSql);
         console.log('Database initialized');
       } catch (err) {
-        console.error('❌ Error initializing database:', err);
+        console.error('Error initializing database:', err);
       }
     }
   }
