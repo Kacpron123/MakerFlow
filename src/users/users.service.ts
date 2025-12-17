@@ -36,7 +36,6 @@ export class UsersService {
 
   async findOne(identifier: string | number): Promise<any | undefined> {
     
-    // Sprawdzenie, jaki typ identyfikatora otrzymaliśmy
     const isNumber = typeof identifier === 'number';
     
     const column = isNumber ? 'user_id' : 'username';
@@ -68,14 +67,15 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const query = `DELETE FROM users WHERE user_id = $1`
+    await this.databaseService.query(query, [id]);
   }
     /**
-   * Tworzy unikalny token sesji i zapisuje go w tabeli 'tokens'.
-   * @param userId ID użytkownika
-   * @param expiresInSeconds Czas ważności tokena w sekundach
-   * @returns Nowo wygenerowany token (string)
+   * Generate a unique session token and save it to the 'tokens' table.
+   * @param userId User ID
+   * @param expiresInSeconds Token expiration time in seconds
+   * @returns Newly generated token (string)
    */
   async generateSessionToken(userId: number, expiresInSeconds: number = 3600): Promise<string> {
     const token = crypto.randomBytes(32).toString('hex');
@@ -92,9 +92,9 @@ export class UsersService {
     return token;
   }
   /**
-   * Sprawdza ważność tokena i zwraca ID użytkownika.
-   * @param token Token sesji
-   * @returns User ID lub null
+   * Verifies the validity of a token and returns the user ID.
+   * @param token Session token
+   * @returns User ID or null
    */
   async validateSessionToken(token: string): Promise<number | null> {
       const query = `

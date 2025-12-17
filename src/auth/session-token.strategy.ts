@@ -9,17 +9,10 @@ export class SessionTokenStrategy extends PassportStrategy(Strategy, 'session-to
     super();
   }
 
-  /**
-   * Ta metoda jest wywoływana automatycznie przez Guard.
-   * Passport wyciąga token z nagłówka "Authorization: Bearer <token>"
-   * i przekazuje go tutaj jako argument 'token'.
-   */
   async validate(token: string): Promise<any> {
-    // 1. Sprawdzamy w bazie danych (tabela tokens), czy taki token istnieje i jest ważny
     const userId = await this.usersService.validateSessionToken(token);
 
     if (!userId) {
-      // Jeśli token nie istnieje lub wygasł, wyrzucamy 401 Unauthorized
       throw new UnauthorizedException('Nieprawidłowy lub wygasły token sesji');
     }
 
@@ -28,7 +21,6 @@ export class SessionTokenStrategy extends PassportStrategy(Strategy, 'session-to
       throw new UnauthorizedException('Użytkownik nie istnieje');
     }
 
-    // 3. To co zwrócimy, NestJS wstrzyknie do obiektu Request (req.user)
     const { password_hash, ...result } = user;
     return result;
   }

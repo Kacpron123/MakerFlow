@@ -14,7 +14,8 @@ CREATE TABLE products (
    product_id SERIAL PRIMARY KEY,
    name TEXT NOT NULL,
    base_price NUMERIC(10,2),
-   group_id INT REFERENCES groups(group_id) ON DELETE SET NULL
+   group_id INT REFERENCES groups(group_id) ON DELETE SET NULL,
+   user_id INT REFERENCES users(user_id) ON DELETE CASCADE
 );
 CREATE TABLE other_transaction (
    transaction_id SERIAL PRIMARY KEY,
@@ -34,7 +35,7 @@ CREATE TABLE payments (
 );
 CREATE TABLE tokens (
 	token_id SERIAL primary key,
-	user_id INT REFERENCES users(user_id),
+	user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
    token TEXT NOT NULL,
    expires_at TIMESTAMP NOT NULL
 );

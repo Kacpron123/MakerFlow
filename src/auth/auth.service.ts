@@ -38,13 +38,11 @@ export class AuthService {
   async register(registerDto: RegisterDto): Promise<any> {
     const { username, password } = registerDto;
 
-    // 1. Sprawdzenie, czy użytkownik już istnieje
     const existingUser = await this.usersService.findOne(username);
     if (existingUser) {
       throw new ConflictException('Użytkownik o tej nazwie już istnieje.');
     }
 
-    // 2. Utworzenie użytkownika (funkcja create w UsersService hashuje hasło)
     const newUser = await this.usersService.create(username, password);
 
     return this.issueToken(newUser);

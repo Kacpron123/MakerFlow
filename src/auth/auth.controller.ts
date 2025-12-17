@@ -25,15 +25,27 @@ export class AuthController {
   @Post('logout')
   @UseGuards(AuthGuard('session-token')) // Wymaga aktywnego tokena do wylogowania
   async logout(@Request() req): Promise<{ message: string }> {
-    // 1. Token jest pobierany z nagłówka żądania (poprzez Guard)
-    // 2. Musisz dostać się do surowego tokena przekazanego przez klienta
-    
-    // Zakładamy, że Guard ('session-token') ma dostęp do surowego tokena:
-    const rawToken = req.headers.authorization.split(' ')[1]; // Pobiera token z nagłówka 'Bearer XYZ'
-    Logger.log(rawToken);
-    // 3. Usuń token z bazy danych
-    await this.authService.revokeToken(rawToken); 
+    const rawToken = req.headers.authorization.split(' ')[1];
+    await this.authService.revokeToken(rawToken);
 
     return { message: 'Wylogowanie pomyślne.' };
   }
+
+  @Post('refresh')
+  @UseGuards(AuthGuard('session-token'))
+  async refresh(@Request() req) {
+    const userId = req.user.user_id;
+
+    const oldToken = req.headers.authorization.split(' ')[1];
+    await this.authService.revokeToken(oldToken);
+
+    const newTokenPayload = await this.authService.issueToken(req.user);
+
+    return {
+      message: 'Token refreshed successfully',
+      ...newTokenPayload
+    };
+  }
+
+
 }
