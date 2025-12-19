@@ -1,4 +1,4 @@
-import { Injectable, Body} from '@nestjs/common';
+import { Injectable, Body, BadRequestException, ConflictException} from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
@@ -63,8 +63,41 @@ export class UsersService {
     return bcrypt.compare(password, hash);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, dto: UpdateUserDto) {
+  const fields: any[] = [];
+  const values: any[] = [];
+  let index = 1;
+
+  if (dto.username) {
+    fields.push(`username = $${index++}`);
+    values.push(dto.username);
+  }
+
+  if (dto.password) {
+    const hashed = await bcrypt.hash(dto.password, 10);
+    fields.push(`password_hash = $${index++}`);
+    values.push(hashed);
+  }
+
+  if (fields.length === 0) throw new BadRequestException('No data provided for update');
+
+  values.push(id);
+  const query = `
+    UPDATE users 
+    SET ${fields.join(', ')} 
+    WHERE user_id = $${index} 
+    RETURNING user_id, username;
+  `;
+
+  try {
+    const result = await this.databaseService.query(query, values);
+    return result[0];
+  } catch (error) {
+    if (error.code === '23505') { // Unique Violation error in Postgres
+      throw new ConflictException('Ta nazwa użytkownika jest już zajęta');
+    }
+    throw error;
+  }
   }
 
   async remove(id: number) {
