@@ -1,5 +1,6 @@
 # personal thingy
 personal/
+.prettierrc
 
 # compiled output
 /dist
