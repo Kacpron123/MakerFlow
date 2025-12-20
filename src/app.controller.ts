@@ -9,9 +9,4 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-  @Get('users')
-  async getUsers() {
-    // Kontroler deleguje zadanie do serwisu
-    return this.appService.getUsers();
-  }
 }

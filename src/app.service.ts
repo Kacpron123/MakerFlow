@@ -9,7 +9,6 @@ export class AppService {
     return 'Hello World!';
   }
   async getUsers() {
-    // Logika dostępu do danych należy do serwisu
     const result = await this.db.query('SELECT user_id, username FROM users;');
     return result;
   }
