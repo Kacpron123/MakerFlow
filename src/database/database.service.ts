@@ -17,17 +17,6 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     });
     await this.pool.connect();
     console.log('✅ Connected to PostgreSQL');
-
-    const initFile = join(__dirname, '../../init.sql');
-    if (existsSync(initFile)) {
-      try {
-        const initSql = readFileSync(initFile, 'utf8');
-        await this.pool.query(initSql);
-        console.log('Database initialized');
-      } catch (err) {
-        console.error('Error initializing database:', err);
-      }
-    }
   }
 
   async onModuleDestroy() {

@@ -23,7 +23,7 @@ export class ProductsService {
     return await this.databaseService.query(query, [userId]);
   }
   async find_One(productId: number) {
-    const query = `SELECT * FROM products WHERE product_id = $2 ORDER BY name ASC`;
+    const query = `SELECT * FROM products WHERE product_id = $1`;
     return await this.databaseService.query(query, [productId]);
   }
   async find_One_Detail(userId: number,productId: number) {

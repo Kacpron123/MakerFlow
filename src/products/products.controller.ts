@@ -7,14 +7,12 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
-  // publics:
   
   // @Get()
   // find_All_Public() {
   //   return this.productsService.find_All_Public();
   // }
   
-  //privates:
   @Post('me')
   @UseGuards(AuthGuard('session-token'))
   create(@Request() req, @Body() createProductDto: CreateProductDto) {
@@ -30,7 +28,6 @@ export class ProductsController {
   find_One_Private(@Request() req, @Param('id') id: string) {
     return this.productsService.find_One_Detail(req.user.user_id, +id);
   }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.find_One(+id);
