@@ -16,7 +16,10 @@ import { ProductsModule } from './products/products.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', 'frontend', 'dist')
     }),
-    ConfigModule.forRoot({isGlobal: true, }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '../.env',
+    }),
     AuthModule,
     UsersModule,
     DatabaseModule,

@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 
 describe('AppController', () => {
   let appController: AppController;
-  let appServiceMock: AppService; // 👈 Zmieniona nazwa, by lepiej oddać mocka
+  let appServiceMock: AppService;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -13,7 +13,6 @@ describe('AppController', () => {
         {
           provide: AppService,
           useValue: {
-            // 👈 Zdefiniuj wszystkie metody, których używa kontroler, jako mocki
             getHello: jest.fn().mockReturnValue('Hello World!'),
             getUsers: jest.fn().mockResolvedValue([{ user_id: 1, name: 'Test' }]),
           },
@@ -22,7 +21,7 @@ describe('AppController', () => {
     }).compile();
 
     appController = app.get<AppController>(AppController);
-    appServiceMock = app.get<AppService>(AppService); // 👈 Pobierz mock
+    appServiceMock = app.get<AppService>(AppService);
   });
 
   describe('root', () => {
@@ -31,7 +30,6 @@ describe('AppController', () => {
       expect(appServiceMock.getHello).toHaveBeenCalled();
     });
 
-    // 👈 DODAJ TEST DLA NOWEGO ENDPOINTU
     it('should call appService.getUsers and return data', async () => {
       const result = await appController.getUsers();
       
