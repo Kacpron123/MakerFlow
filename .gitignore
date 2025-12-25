@@ -4,6 +4,7 @@ priv_*
 
 # compiled output
 dist
+dist-ssr
 node_modules
 build
 
@@ -31,6 +32,11 @@ coverage
 *.launch
 .settings/
 *.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # IDE - VSCode
 .vscode/*
@@ -44,7 +50,7 @@ coverage
 .env.development.local
 .env.test.local
 .env.production.local
-.env.local
+*.local
 !.env.example
 
 # temp directory

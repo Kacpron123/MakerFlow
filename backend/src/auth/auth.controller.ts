@@ -28,7 +28,7 @@ export class AuthController {
     const rawToken = req.headers.authorization.split(' ')[1];
     await this.authService.revokeToken(rawToken);
 
-    return { message: 'Wylogowanie pomyślne.' };
+    return { message: 'Logout successful.' };
   }
 
   @Post('refresh')
@@ -42,7 +42,7 @@ export class AuthController {
     const newTokenPayload = await this.authService.issueToken(req.user);
 
     return {
-      message: 'Token refreshed successfully',
+      message: 'Token refreshed successfully. Please use the new token to authenticate.',
       ...newTokenPayload
     };
   }

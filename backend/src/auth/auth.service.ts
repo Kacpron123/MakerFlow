@@ -14,9 +14,9 @@ export class AuthService {
    * @param user User data
    * @returns A promise that resolves to an object containing the session token
    */
-  async issueToken(user: any): Promise<{ token: string }> {
-    const token = await this.usersService.generateSessionToken(user.user_id, 3600); // 1 hour
-    return { token };
+  async issueToken(user: any): Promise<{ access_token: string }> {
+    const access_token = await this.usersService.generateSessionToken(user.user_id, 3600); // 1 hour
+    return { access_token };
   }
 
   /**
@@ -40,7 +40,7 @@ export class AuthService {
 
     const existingUser = await this.usersService.findOne(username);
     if (existingUser) {
-      throw new ConflictException('Użytkownik o tej nazwie już istnieje.');
+      throw new ConflictException('A user with that username already exists.');
     }
 
     const newUser = await this.usersService.create(username, password);
