@@ -26,9 +26,6 @@ const Navbar = () => {
                 <Link to="/dashboard" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
                   Dashboard
                 </Link>
-                <Link to="/create-product" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                  New Product
-                </Link>
                 <button
                   onClick={handleLogout}
                   className="ml-4 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
