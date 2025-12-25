@@ -22,7 +22,7 @@ const ProductForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await api.get(`/products/me/${id}`);
+      const response = await api.get(`/products/${id}`);
       setFormData({
         name: response.data.name,
         base_price: response.data.base_price,
@@ -46,7 +46,7 @@ const ProductForm = () => {
       if (isEdit) {
         await api.patch(`/products/${id}`, payload);
       } else {
-        await api.post('/products/me', payload);
+        await api.post('/products', payload);
       }
       navigate('/dashboard');
     } catch (error) {

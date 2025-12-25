@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { DatabaseService } from '@database/database.service';
+import { ProductResponseDto } from './entities/product.entity';
 
 @Injectable()
 export class ProductsService {
@@ -18,27 +19,30 @@ export class ProductsService {
       return res[0];
     }
 
-  async find_All_Private(userId: number) {
+  async find_All(userId: number) {
     const query = `SELECT * FROM products WHERE user_id = $1 ORDER BY name ASC`;
-    return await this.databaseService.query(query, [userId]);
+    const rows = await this.databaseService.query(query, [userId]);
+    return rows.map(row => new ProductResponseDto(row));
   }
+
   async find_One(productId: number) {
     const query = `SELECT * FROM products WHERE product_id = $1`;
-    return await this.databaseService.query(query, [productId]);
+    const res = await this.databaseService.query(query, [productId]);
+    if (!res[0]) return null;
+    return new ProductResponseDto(res[0]);
   }
-  async find_One_Detail(userId: number,productId: number) {
+
+  async find_One_Detail(userId: number, productId: number) {
     const query = `SELECT * FROM products WHERE user_id = $1 AND product_id = $2 ORDER BY name ASC`;
-    return await this.databaseService.query(query, [userId,productId]);
+    const res = await this.databaseService.query(query, [userId, productId]);
+    if (!res[0]) return null;
+    return new ProductResponseDto(res[0]);
   }
   async remove(userId:number,id: number) {
     const query = `DELETE FROM products WHERE user_id = $1 AND product_id = $2`
     return await this.databaseService.query(query, [userId,id]);
   }
   
-  // async find_All_Public(){
-
-  // }
-
   update(id: number, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} product`;
   }

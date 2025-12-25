@@ -1,13 +1,22 @@
-export class Product {
-  product_id: number;
-  user_id: number;
-  name: string;
-  base_price: number;
-  group_id: number | null;
-  
-  group_name?: string;///<optional
+import { Exclude } from 'class-transformer';
 
-  constructor(partial: Partial<Product>) {
-    Object.assign(this, partial);
+export class ProductResponseDto {
+  id: number;
+  name: string;
+  price: number;
+
+  @Exclude()
+  product_id: number;
+
+  @Exclude()
+  base_price: number;
+
+  @Exclude()
+  user_id: number;
+
+  constructor(partial: any) {
+    this.id = partial.product_id;
+    this.name = partial.name;
+    this.price = partial.base_price;
   }
 }

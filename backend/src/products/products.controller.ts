@@ -1,44 +1,33 @@
-import { Controller, Get, UseGuards, Post, Body, Patch, Param, Delete, Request } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Body, Patch, Param, Delete, Request, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from '@nestjs/passport';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('products')
+@UseGuards(AuthGuard('session-token'))
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
   
-  // @Get()
-  // find_All_Public() {
-  //   return this.productsService.find_All_Public();
-  // }
-  
-  @Post('me')
-  @UseGuards(AuthGuard('session-token'))
+  @Post()
   create(@Request() req, @Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto,req.user.user_id);
   }
-  @Get('me')
-  @UseGuards(AuthGuard('session-token'))
+  @Get()
   find_All_Private(@Request() req) {
-    return this.productsService.find_All_Private(req.user.user_id);
+    return this.productsService.find_All(req.user.user_id);
   }
-  @Get('me/:id')
-  @UseGuards(AuthGuard('session-token'))
-  find_One_Private(@Request() req, @Param('id') id: string) {
-    return this.productsService.find_One_Detail(req.user.user_id, +id);
-  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.find_One(+id);
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('session-token'))
   remove(@Param('id') id: string, @Request() req) {
     return this.productsService.remove(req.user.user_id, +id);
   }
-
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
