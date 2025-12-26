@@ -1,4 +1,4 @@
-import { Injectable, Body, BadRequestException, ConflictException} from '@nestjs/common';
+import { Injectable, Body, BadRequestException, ConflictException, UnauthorizedException} from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
@@ -27,8 +27,28 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async changeUsername(userId: number, newUsername: string) {
+    const query = `UPDATE users SET username = $1 WHERE user_id = $2`;
+    await this.databaseService.query(query, [newUsername, userId]);
+    return { message: 'Username updated successfully' };
+  }
+  async changePassword(userId: number, oldPass: string, newPass: string) {
+    const userRes = await this.databaseService.query(
+      'SELECT password_hash FROM users WHERE user_id = $1', 
+      [userId]
+    );
+    const user = userRes[0];
+    const isMatch = await bcrypt.compare(oldPass, user.password_hash);
+    if (!isMatch) {
+      throw new UnauthorizedException('The password is incorrect');
+    }
+    const hashedNewPass = await bcrypt.hash(newPass, 10);
+    await this.databaseService.query(
+      'UPDATE users SET password_hash = $1 WHERE user_id = $2',
+      [hashedNewPass, userId]
+    );
+
+    return { message: 'Password updated successfully' };
   }
 
   async findOne(username: string): Promise<any | undefined>;

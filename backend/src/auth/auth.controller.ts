@@ -1,11 +1,18 @@
-import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body, Get } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
-import { Logger } from '@nestjs/common';
+
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+  
+  @Get('me')
+  @UseGuards(AuthGuard('session-token'))
+  async getmydata(@Request() req) {
+    const userId = req.user.user_id;
+    return await this.authService.getUserData(userId);
+  }
 
   @UseGuards(AuthGuard('local')) 
   @Post('login')
@@ -23,7 +30,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AuthGuard('session-token')) // Wymaga aktywnego tokena do wylogowania
+  @UseGuards(AuthGuard('session-token'))
   async logout(@Request() req): Promise<{ message: string }> {
     const rawToken = req.headers.authorization.split(' ')[1];
     await this.authService.revokeToken(rawToken);

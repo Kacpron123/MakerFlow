@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { DatabaseService } from '@database/database.service';
 import { RegisterDto } from './dto/register.dto';
@@ -6,6 +6,7 @@ import { RegisterDto } from './dto/register.dto';
 @Injectable()
 export class AuthService {
   constructor(
+    private databaseService: DatabaseService,
     private usersService: UsersService,
   ) {}
 
@@ -49,5 +50,24 @@ export class AuthService {
   }
   async revokeToken(token: string): Promise<void> {
     await this.usersService.removeSessionToken(token);
+  }
+
+  async getUserData(userId: number){
+    try {
+      const query = `
+        SELECT
+          user_id AS "id",
+          username
+        FROM
+          users
+        WHERE
+          user_id = $1
+      `;
+      const result = await this.databaseService.query(query, [userId]);
+      return result[0];
+    } catch (error) {
+    console.error(`Failed to fetch user data: ${error.message}`);
+    throw new InternalServerErrorException('Failed to fetch profile data.');
+    }
   }
 }

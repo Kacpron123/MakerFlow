@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import ProductForm from './pages/ProductForm';
 import Home from './pages/Home';
+import Profile from './pages/Profile';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -39,6 +40,11 @@ function App() {
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         } />
         <Route path="/create-product" element={

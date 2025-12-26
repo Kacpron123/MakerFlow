@@ -6,12 +6,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
   
   @Delete('me')
   @UseGuards(AuthGuard('session-token'))
@@ -27,7 +21,19 @@ export class UsersController {
     const userId = req.user.user_id;
     return this.usersService.update(userId, updateUserDto);
   }
+  @Patch('me/username')
+  @UseGuards(AuthGuard('session-token'))
+  async updateUsername(@Request() req, @Body() body: { username: string }) {
+    const userId = req.user.user_id;
+    return this.usersService.changeUsername(userId, body.username);
+  }
 
+  @Patch('me/password')
+  @UseGuards(AuthGuard('session-token'))
+  async updatePassword(@Request() req, @Body() body: { oldPass: string, newPass: string }) {
+    const userId = req.user.user_id;
+    return this.usersService.changePassword(userId, body.oldPass, body.newPass);
+  }
   
   // TODO admin
   // @Delete(':id')
