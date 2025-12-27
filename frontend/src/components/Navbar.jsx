@@ -8,7 +8,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/', {replace: true});
   };
   // TODO navbar theme button
   return (

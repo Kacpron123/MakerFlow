@@ -12,7 +12,7 @@ const Register = () => {
     e.preventDefault();
     const success = await register(username, password);
     if (success) {
-      navigate('/login');
+      navigate('/login', { replace: true });
     } else {
       alert('Registration failed');
     }

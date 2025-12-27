@@ -4,7 +4,6 @@ import { useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-// import ProductForm from './pages/ProductForm';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 
@@ -23,7 +22,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
   
-  if (!user) return <Navigate to="/login" />;
+  if (!user) return <Navigate to="/" replace />;
   
   return <>{children}</>;
 };
