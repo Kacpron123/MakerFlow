@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { DatabaseService } from '@database/database.service';
@@ -43,8 +43,37 @@ export class ProductsService {
     return await this.databaseService.query(query, [userId,id]);
   }
   
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(userId: number, product_id: number, updateProductDto: UpdateProductDto) {
+    const { group_id,name, group, price } = updateProductDto;
+    const fields: string[] = [];
+    const values: any[] = [];
+    let i = 1;
+
+    if (name) {
+      fields.push(`name = $${i++}`);
+      values.push(name);
+    }
+    if (group !== undefined) {
+      fields.push(`group_id = $${i++}`);
+      values.push(group);
+    }
+    if (price) {
+      fields.push(`base_price = $${i++}`);
+      values.push(price);
+    }
+    values.push(product_id);
+    const idIndex = i++;
+    values.push(userId);
+    const userIndex = i;
+
+  const query = `
+    UPDATE products 
+    SET ${fields.join(', ')} 
+    WHERE product_id = $${idIndex} AND user_id = $${userIndex}
+    RETURNING *;
+  `;
+  const res = await this.databaseService.query(query, values);
+  return res[0];
   }
 
 

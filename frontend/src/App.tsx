@@ -4,7 +4,7 @@ import { useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import ProductForm from './pages/ProductForm';
+// import ProductForm from './pages/ProductForm';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 
@@ -45,16 +45,6 @@ function App() {
         <Route path="/profile" element={
           <ProtectedRoute>
             <Profile />
-          </ProtectedRoute>
-        } />
-        <Route path="/create-product" element={
-          <ProtectedRoute>
-            <ProductForm />
-          </ProtectedRoute>
-        } />
-        <Route path="/edit-product/:id" element={
-          <ProtectedRoute>
-            <ProductForm />
           </ProtectedRoute>
         } />
       </Routes>
