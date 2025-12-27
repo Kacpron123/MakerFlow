@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import api from '@/api/axios';
-import Navbar from '@/components/Navbar';
+import api from '../api/axios';
+import Navbar from '../components/Navbar';
 
 // Shadcn UI
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ import { DialogTrigger } from '@radix-ui/react-dialog';
 interface Product {
   id: number;
   name: string;
-  base_price: number;
+  price: number;
   group_id?: number;
 }
 
@@ -31,7 +31,7 @@ const Dashboard = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: '',
-    base_price: 0,
+    price: 0,
   });
   useEffect(() => {
     fetchProducts();
@@ -50,7 +50,7 @@ const Dashboard = () => {
   try {
     await api.post('/products', newProduct);
     setIsCreateModalOpen(false);
-    setNewProduct({ name: '', base_price: 0 });
+    setNewProduct({ name: '', price: 0 });
     fetchProducts();
   } catch (error) {
     console.error('Failed to create product', error);
@@ -99,7 +99,7 @@ const Dashboard = () => {
             </Button>
           </DialogTrigger>
 
-          <DialogContent>
+          <DialogContent> {/*form create product*/}
             <DialogHeader>
               <DialogTitle>Add New Product</DialogTitle>
               <DialogDescription>Enter the details for your new product.</DialogDescription>
@@ -121,8 +121,8 @@ const Dashboard = () => {
                   id="new-price" 
                   type="number"
                   placeholder="0.00"
-                  value={newProduct.base_price || ''}
-                  onChange={(e) => setNewProduct({...newProduct, base_price: Number(e.target.value)})}
+                  value={newProduct.price || ''}
+                  onChange={(e) => setNewProduct({...newProduct, price: Number(e.target.value)})}
                 />
               </div>
             </div>
@@ -148,7 +148,7 @@ const Dashboard = () => {
                   <CardTitle>{product.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-indigo-600">${product.base_price}</p>
+                  <p className="text-2xl font-bold text-indigo-600">${product.price}</p>
                   {product.group_id && (
                     <p className="text-sm text-gray-400 mt-2">Group ID: {product.group_id}</p>
                   )}
@@ -197,8 +197,8 @@ const Dashboard = () => {
                   <Input 
                     id="price" 
                     type="number"
-                    value={editingProduct.base_price}
-                    onChange={(e) => setEditingProduct({...editingProduct, base_price: Number(e.target.value)})}
+                    value={editingProduct.price}
+                    onChange={(e) => setEditingProduct({...editingProduct, price: Number(e.target.value)})}
                   />
                 </div>
               </div>

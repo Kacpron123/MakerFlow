@@ -9,13 +9,13 @@ export class ProductsService {
   constructor(private databaseService: DatabaseService) {}
 
   async create(createProductDto: CreateProductDto, userId: number) {
-      const { name, base_price, group_id } = createProductDto;
+      const { name, price, group_id } = createProductDto;
       const query = `
         INSERT INTO products (name, base_price, group_id, user_id)
         VALUES ($1, $2, $3, $4)
         RETURNING *;
       `;
-      const res = await this.databaseService.query(query, [name, base_price, group_id || null, userId]);
+      const res = await this.databaseService.query(query, [name, price, group_id || null, userId]);
       return res[0];
     }
 
@@ -44,7 +44,7 @@ export class ProductsService {
   }
   
   async update(userId: number, product_id: number, updateProductDto: UpdateProductDto) {
-    const { group_id,name, group, price } = updateProductDto;
+    const { name, group, price } = updateProductDto;
     const fields: string[] = [];
     const values: any[] = [];
     let i = 1;

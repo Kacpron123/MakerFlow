@@ -8,7 +8,7 @@ export class CreateProductDto {
   @IsNumber()
   @Min(0)
   @IsOptional()
-  base_price?: number;
+  price?: number;
 
   @IsNumber()
   @IsOptional()
