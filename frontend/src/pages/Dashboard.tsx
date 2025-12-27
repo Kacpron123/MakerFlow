@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import api from '../api/axios';
-import Navbar from '../components/Navbar';
+import { useEffect, useState } from 'react';
+import api from '@/api/axios';
+import Navbar from '@/components/Navbar';
 
 // Shadcn UI
 import { Button } from "@/components/ui/button";

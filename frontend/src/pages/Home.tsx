@@ -1,10 +1,10 @@
-import React from 'react';
-import Navbar from '../components/Navbar';
+import { type FC } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import Navbar from '@/components/Navbar';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from "@/components/ui/button";
 
-const Home = () => {
+const Home: FC = () => {
   const { user } = useAuth();
 
   return (
@@ -22,23 +22,26 @@ const Home = () => {
           
           <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8 gap-4">
             {user ? (
-              /* logged in */
+              /* Zalogowany */
               <Link to="/dashboard">
                 <Button size="lg" className="px-10 py-6 text-lg bg-indigo-600 hover:bg-indigo-700">
                   Go to Dashboard
                 </Button>
               </Link>
             ) : (
-              /* No account yet */
+              /* Brak konta */
               <>
-              {/* TODO replace url paths */}
                 <Link to="/register">
                   <Button size="lg" className="px-10 py-6 text-lg bg-indigo-600 hover:bg-indigo-700">
                     Get started
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button size="lg" variant="outline" className="px-10 py-6 text-lg text-indigo-600 border-indigo-600 hover:bg-indigo-50">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="px-10 py-6 text-lg text-indigo-600 border-indigo-600 hover:bg-indigo-50"
+                  >
                     Log in
                   </Button>
                 </Link>

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import api from '../api/axios';
-import Navbar from '../components/Navbar';
-import { useAuth } from '../context/AuthContext';
+import { useState, useEffect } from 'react';
+import api from '@/api/axios';
+import Navbar from '@/components/Navbar';
+import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 // Shadcn UI
