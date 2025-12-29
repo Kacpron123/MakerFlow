@@ -1,86 +1,27 @@
 import { useEffect, useState } from 'react';
-import api from '../api/axios';
 import Navbar from '../components/Navbar';
 
-// Shadcn UI
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { DialogTrigger } from '@radix-ui/react-dialog';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Package } from 'lucide-react';
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  group_id?: number;
-}
 
 const Dashboard = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    price: 0,
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    totalProducts: 0,
   });
   useEffect(() => {
-    fetchProducts();
+    fetchStats();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchStats = async () => {
     try {
-      const response = await api.get('/products');
-      setProducts(response.data);
+      // TODO products/stats
+      // const response = await api.get('/products');
+      // setStats(response.data);
     } catch (error) {
       console.error('Failed to fetch products', error);
-    }
-  };
-
-  const handleCreate = async () => {
-  try {
-    await api.post('/products', newProduct);
-    setIsCreateModalOpen(false);
-    setNewProduct({ name: '', price: 0 });
-    fetchProducts();
-  } catch (error) {
-    console.error('Failed to create product', error);
-  }
-  };
-  const handleEditClick = (product: Product) => {
-    setEditingProduct({ ...product });
-    setIsEditModalOpen(true);
-  };
-
-  const handleUpdate = async () => {
-    if (!editingProduct) return;
-    const { id, ...productData } = editingProduct;
-    try {
-      await api.patch(`/products/${editingProduct.id}`, productData);
-      setIsEditModalOpen(false);
-      fetchProducts();
-    } catch (error) {
-      console.error('Failed to update product', error);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        await api.delete(`/products/${id}`);
-        fetchProducts();
-      } catch (error) {
-        console.error('Failed to delete product', error);
-      }
     }
   };
 
@@ -88,129 +29,80 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-
-        {/* header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Your Products</h1>
-          <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-indigo-600 hover:bg-indigo-700">
-              + New Product
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent> {/*form create product*/}
-            <DialogHeader>
-              <DialogTitle>Add New Product</DialogTitle>
-              <DialogDescription>Enter the details for your new product.</DialogDescription>
-            </DialogHeader>
-            
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="new-name">Product Name</Label>
-                <Input 
-                  id="new-name" 
-                  placeholder="Name"
-                  value={newProduct.name}
-                  onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="new-price">Price</Label>
-                <Input 
-                  id="new-price" 
-                  type="number"
-                  placeholder="0.00"
-                  value={newProduct.price || ''}
-                  onChange={(e) => setNewProduct({...newProduct, price: Number(e.target.value)})}
-                />
-              </div>
-            </div>
-
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>Cancel</Button>
-              <Button onClick={handleCreate}>Create Product</Button>
-            </DialogFooter>
-          </DialogContent>
-          </Dialog>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
+          <p className="text-slate-500">Welcome again! lets manage our trash.</p>
+        </div>
+        {/* TODO stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <Card className="border-l-4 border-l-indigo-600">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-500">Wszystkie Produkty</CardTitle>
+              <Package className="h-4 w-4 text-slate-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalProducts}</div>
+              <p className="text-xs text-slate-400">+2 w tym tygodniu</p>
+            </CardContent>
+          </Card>
         </div>
 
-
-        {products.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg border-2 border-dashed">
-            <p className="text-gray-500">No products found.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => (
-              <Card key={product.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <CardTitle>{product.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold text-indigo-600">${product.price}</p>
-                  {product.group_id && (
-                    <p className="text-sm text-gray-400 mt-2">Group ID: {product.group_id}</p>
-                  )}
-                </CardContent>
-                <CardFooter className="flex justify-end gap-2 bg-gray-50/50 pt-4">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleEditClick(product)}
-                  >
-                    Edit
-                  </Button>
-                  <Button 
-                    variant="destructive" 
-                    size="sm" 
-                    onClick={() => handleDelete(product.id)}
-                  >
-                    Delete
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        )}
-
-        {/* editing product */}
-        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Product</DialogTitle>
-              <DialogDescription>Update the product details below.</DialogDescription>
-            </DialogHeader>
-            
-            {editingProduct && (
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Product Name</Label>
-                  <Input 
-                    id="name" 
-                    value={editingProduct.name}
-                    onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="price">Price</Label>
-                  <Input 
-                    id="price" 
-                    type="number"
-                    value={editingProduct.price}
-                    onChange={(e) => setEditingProduct({...editingProduct, price: Number(e.target.value)})}
-                  />
-                </div>
+        {/* navigation */}
+        <h2 className="text-xl font-semibold mb-6">Zarządzanie</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          {/* Link to products */}
+          <Card 
+            className="group hover:border-indigo-600 transition-all cursor-pointer"
+            onClick={() => navigate('/products')}
+          >
+            <CardHeader>
+              <div className="p-3 w-fit bg-indigo-50 text-indigo-600 rounded-lg mb-2 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                <Package size={24} />
               </div>
-            )}
+              <CardTitle>Products</CardTitle>
+              <CardDescription>Manage products.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-end">
+              <ArrowRight size={20} className="text-slate-300 group-hover:text-indigo-600 transition-colors" />
+            </CardContent>
+          </Card>
 
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
-              <Button onClick={handleUpdate}>Save Changes</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          {/* Link do Historii Sprzedaży */}
+          {/* <Card 
+            className="group hover:border-green-600 transition-all cursor-pointer"
+            onClick={() => navigate('/sales-history')}
+          >
+            <CardHeader>
+              <div className="p-3 w-fit bg-green-50 text-green-600 rounded-lg mb-2 group-hover:bg-green-600 group-hover:text-white transition-colors">
+                <TrendingUp size={24} />
+              </div>
+              <CardTitle>Historia Sprzedaży</CardTitle>
+              <CardDescription>Przeglądaj listę wszystkich zarobionych pieniędzy.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-end">
+              <ArrowRight size={20} className="text-slate-300 group-hover:text-green-600 transition-colors" />
+            </CardContent>
+          </Card> */}
 
+          {/* Link do Ustawień Konta */}
+          {/* <Card 
+            className="group hover:border-slate-900 transition-all cursor-pointer"
+            onClick={() => navigate('/profile')}
+          >
+            <CardHeader>
+              <div className="p-3 w-fit bg-slate-100 text-slate-900 rounded-lg mb-2 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                <Settings size={24} />
+              </div>
+              <CardTitle>Ustawienia</CardTitle>
+              <CardDescription>Zmień hasło, nazwę użytkownika lub wyloguj się.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-end">
+              <ArrowRight size={20} className="text-slate-300 group-hover:text-slate-900 transition-colors" />
+            </CardContent>
+          </Card> */}
+
+        </div>
       </div>
     </div>
   );

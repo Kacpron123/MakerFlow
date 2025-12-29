@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import Products from './pages/Products';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -44,6 +45,11 @@ function App() {
         <Route path="/profile" element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/products" element={
+          <ProtectedRoute>
+            <Products />
           </ProtectedRoute>
         } />
       </Routes>
