@@ -19,7 +19,7 @@ const Dashboard = () => {
     try {
       // TODO products/stats
       // const response = await api.get('/products');
-      // setStats(response.data);
+      setStats({totalProducts: 0});
     } catch (error) {
       console.error('Failed to fetch products', error);
     }
