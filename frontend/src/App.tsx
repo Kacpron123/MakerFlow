@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import {
   Login,
   Register,
@@ -8,7 +8,8 @@ import {
   Profile,
   Products,
   Inventory,
-} from "./pages";
+} from "@/pages";
+import { ROUTES } from '@/constants/routes';
 
 const ProtectedRoute = () => {
   const { user, loading } = useAuth();
@@ -20,9 +21,9 @@ const ProtectedRoute = () => {
       </div>
     );
   }
-  
-  if (!user) return <Navigate to="/" replace />;
-  
+
+  if (!user) return <Navigate to={ROUTES.HOME} replace />;
+
   return <Outlet />;
 };
 
@@ -30,16 +31,16 @@ function App() {
   return (
     <BrowserRouter>
   <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
+    <Route path={ROUTES.HOME} element={<Home />} />
+    <Route path={ROUTES.LOGIN} element={<Login />} />
+    <Route path={ROUTES.REGISTER} element={<Register />} />
 
     {/* protected routes */}
     <Route element={<ProtectedRoute />}>
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/products" element={<Products />} />
-      <Route path="/inventory" element={<Inventory />} />
+      <Route path={ROUTES.DASHBOARD.ROOT} element={<Dashboard />} />
+      <Route path={ROUTES.DASHBOARD.PRODUCTS} element={<Products />} />
+      <Route path={ROUTES.DASHBOARD.INVENTORY} element={<Inventory />} />
+      <Route path={ROUTES.PROFILE} element={<Profile />} />
     </Route>
   </Routes>
 </BrowserRouter>

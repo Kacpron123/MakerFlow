@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Package } from 'lucide-react';
+import { ROUTES } from '@/constants/routes';
 
 
 const Dashboard = () => {
@@ -54,7 +55,7 @@ const Dashboard = () => {
           {/* Link to products */}
           <Card 
             className="group hover:border-indigo-600 transition-all cursor-pointer"
-            onClick={() => navigate('/products')}
+            onClick={() => navigate(ROUTES.DASHBOARD.PRODUCTS)}
           >
             <CardHeader>
               <div className="p-3 w-fit bg-indigo-50 text-indigo-600 rounded-lg mb-2 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
@@ -71,7 +72,7 @@ const Dashboard = () => {
           {/* Link do Historii Sprzedaży */}
           <Card 
             className="group hover:border-indigo-600 transition-all cursor-pointer"
-            onClick={() => navigate('/inventory')}
+            onClick={() => navigate(ROUTES.DASHBOARD.INVENTORY)}
           >
             <CardHeader>
               <div className="p-3 w-fit bg-indigo-50 text-indigo-600 rounded-lg mb-2 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
@@ -89,7 +90,7 @@ const Dashboard = () => {
           {/* Link do Ustawień Konta */}
           {/* <Card 
             className="group hover:border-slate-900 transition-all cursor-pointer"
-            onClick={() => navigate('/profile')}
+            onClick={() => navigate(ROUTES.PROFILE)}
           >
             <CardHeader>
               <div className="p-3 w-fit bg-slate-100 text-slate-900 rounded-lg mb-2 group-hover:bg-slate-900 group-hover:text-white transition-colors">

@@ -19,6 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ROUTES } from '@/constants/routes';
 
 // Ikonki
 import { User, Lock, LogOut, ChevronRight } from "lucide-react";
@@ -204,7 +205,7 @@ const Profile = () => {
               className="flex items-center gap-4 p-4 hover:bg-red-50 transition-colors cursor-pointer group"
               onClick={() => {
                 logout();
-                navigate('/login');
+                navigate(ROUTES.LOGIN);
               }}
             >
               <div className="p-2 bg-red-100 text-red-600 rounded-full group-hover:bg-red-200">
