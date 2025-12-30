@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ROUTES } from '@/constants/routes';
+import { API_ROUTES } from '@/constants/api-routes';
 
 // Ikonki
 import { User, Lock, LogOut, ChevronRight } from "lucide-react";
@@ -46,7 +47,7 @@ const Profile = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await api.get('/auth/me');
+      const response = await api.get(API_ROUTES.ME.ME);
       setUsername(response.data.username);
       setTempUsername(response.data.username);
     } catch (error) {
@@ -56,7 +57,7 @@ const Profile = () => {
 
   const handleUpdateUsername = async () => {
     try {
-      await api.patch('/users/me/username', { username: tempUsername });
+      await api.patch(API_ROUTES.ME.EDIT_USERNAME, { username: tempUsername });
       setUsername(tempUsername);
       setIsUserModalOpen(false);
     } catch (error) {
@@ -71,7 +72,7 @@ const Profile = () => {
     }
 
     try {
-      await api.patch('/users/me/password', {
+      await api.patch(API_ROUTES.ME.EDIT_PASSWORD, {
         oldPass: passData.oldPassword,
         newPass: passData.newPassword
       });

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, } from 'lucide-react';
+import { API_ROUTES } from '@/constants/api-routes';
 
 interface Product {
   id: number;
@@ -24,13 +25,13 @@ const Inventory = () => {
   }, []);
 
   const fetchProducts = async () => {
-    const res = await api.get('/products');
+    const res = await api.get(API_ROUTES.PRODUCTS.GET_ALL);
     setProducts(res.data);
   };
 
   const updateStock = async (id: number, amount: number) => {
     try {
-      await api.patch(`/products/${id}/stock`, { increment: amount });
+      await api.patch(API_ROUTES.PRODUCTS.STOCK(id), { increment: amount });
       setProducts(prev => prev.map(p => 
         p.id === id ? { ...p, stock: p.stock + amount } : p
       ));

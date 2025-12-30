@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { DialogTrigger } from '@radix-ui/react-dialog';
+import { API_ROUTES } from '@/constants/api-routes';
 
 interface Product {
   id: number;
@@ -39,7 +40,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await api.get('/products');
+      const response = await api.get(API_ROUTES.PRODUCTS.GET_ALL);
       setProducts(response.data);
     } catch (error) {
       console.error('Failed to fetch products', error);
@@ -48,7 +49,7 @@ const Products = () => {
 
   const handleCreate = async () => {
   try {
-    await api.post('/products', newProduct);
+    await api.post(API_ROUTES.PRODUCTS.CREATE, newProduct);
     setIsCreateModalOpen(false);
     setNewProduct({ name: '', price: 0 });
     fetchProducts();
@@ -65,7 +66,7 @@ const Products = () => {
     if (!editingProduct) return;
     const { id, ...productData } = editingProduct;
     try {
-      await api.patch(`/products/${editingProduct.id}`, productData);
+      await api.patch(API_ROUTES.PRODUCTS.DETAIL(id), productData);
       setIsEditModalOpen(false);
       fetchProducts();
     } catch (error) {
@@ -76,7 +77,7 @@ const Products = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await api.delete(`/products/${id}`);
+        await api.delete(API_ROUTES.PRODUCTS.DETAIL(id));
         fetchProducts();
       } catch (error) {
         console.error('Failed to delete product', error);
