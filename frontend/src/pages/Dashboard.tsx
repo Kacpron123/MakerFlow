@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Package } from 'lucide-react';
+import { ArrowRight, Package, Database } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 
 
@@ -76,7 +76,7 @@ const Dashboard = () => {
           >
             <CardHeader>
               <div className="p-3 w-fit bg-indigo-50 text-indigo-600 rounded-lg mb-2 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                <Package size={24} />
+                <Database size={24} />
               </div>
               <CardTitle>Inventory</CardTitle>
               <CardDescription>Manage inventory.</CardDescription>
