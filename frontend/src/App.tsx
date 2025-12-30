@@ -7,6 +7,7 @@ import {
   Home,
   Profile,
   Products,
+  Inventory,
 } from "./pages";
 
 const ProtectedRoute = () => {
@@ -38,6 +39,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/products" element={<Products />} />
+      <Route path="/inventory" element={<Inventory />} />
     </Route>
   </Routes>
 </BrowserRouter>
