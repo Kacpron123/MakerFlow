@@ -13,7 +13,7 @@ const Register = () => {
     e.preventDefault();
     const success = await register(username, password);
     if (success) {
-      navigate(ROUTES.LOGIN, { replace: true });
+      navigate(ROUTES.DASHBOARD.ROOT, { replace: true });
     } else {
       alert('Registration failed');
     }
