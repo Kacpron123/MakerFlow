@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { DatabaseService } from '@database/database.service';
@@ -76,5 +76,15 @@ export class ProductsService {
   return res[0];
   }
 
+  async updateStock(userId: number, product_id: number, stock_add: number) {
+    const query = `
+      UPDATE products 
+      SET stock_number = stock_number + $1
+      WHERE product_id = $2 AND user_id = $3
+      RETURNING *;
+    `;
+    const res = await this.databaseService.query(query, [stock_add, product_id, userId]);
+    return new ProductResponseDto(res[0]);
+  }
 
 }

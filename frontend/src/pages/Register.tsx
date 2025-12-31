@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
+import { ROUTES } from '@/constants/routes';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -12,7 +13,7 @@ const Register = () => {
     e.preventDefault();
     const success = await register(username, password);
     if (success) {
-      navigate('/login', { replace: true });
+      navigate(ROUTES.DASHBOARD.ROOT, { replace: true });
     } else {
       alert('Registration failed');
     }

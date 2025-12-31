@@ -2,7 +2,8 @@ import React, {
   createContext, useState, useContext, useEffect, 
   type ReactNode, type FC 
 } from 'react';
-import api from '../api/axios';
+import api from '@/api/axios';
+import { API_ROUTES } from '@/constants/api-routes';
 
 interface User {
   username: string;
@@ -35,7 +36,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
-      const response = await api.post<{ access_token: string }>('/auth/login', { 
+      const response = await api.post<{ access_token: string }>(API_ROUTES.LOGIN, { 
         username, 
         password 
       });
@@ -51,7 +52,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (username: string, password: string): Promise<boolean> => {
     try {
-      await api.post('/auth/register', { username, password });
+      await api.post(API_ROUTES.REGISTER, { username, password });
       return true;
     } catch (error) {
       console.error('Registration failed', error);

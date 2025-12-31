@@ -1,17 +1,17 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Home from './pages/Home';
-import Profile from './pages/Profile';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
+import {
+  Login,
+  Register,
+  Dashboard,
+  Home,
+  Profile,
+  Products,
+  Inventory,
+} from "@/pages";
+import { ROUTES } from '@/constants/routes';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
-
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+const ProtectedRoute = () => {
   const { user, loading } = useAuth();
   
   if (loading) {
@@ -21,33 +21,30 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       </div>
     );
   }
-  
-  if (!user) return <Navigate to="/" replace />;
-  
-  return <>{children}</>;
+
+  if (!user) return <Navigate to={ROUTES.HOME} replace />;
+
+  return <Outlet />;
 };
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        
-        {/* Protected Routes */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/profile" element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        } />
-      </Routes>
-    </BrowserRouter>
+  <Routes>
+    <Route path={ROUTES.HOME} element={<Home />} />
+    <Route path={ROUTES.LOGIN} element={<Login />} />
+    <Route path={ROUTES.REGISTER} element={<Register />} />
+
+    {/* protected routes */}
+    <Route element={<ProtectedRoute />}>
+      <Route path={ROUTES.DASHBOARD.ROOT} element={<Dashboard />} />
+      <Route path={ROUTES.DASHBOARD.PRODUCTS} element={<Products />} />
+      <Route path={ROUTES.DASHBOARD.INVENTORY} element={<Inventory />} />
+      <Route path={ROUTES.PROFILE} element={<Profile />} />
+    </Route>
+  </Routes>
+</BrowserRouter>
+
   );
 }
 

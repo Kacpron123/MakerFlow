@@ -33,4 +33,9 @@ export class ProductsController {
   update(@Param('id') id: number,@Request() req, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(req.user.user_id, +id, updateProductDto);
   }
+
+  @Patch(':id/stock')
+  updateStock(@Param('id') id: number, @Request() req, @Body() body: {stock_add: number}) {
+    return this.productsService.updateStock(req.user.user_id, +id, body.stock_add);
+  }
 }

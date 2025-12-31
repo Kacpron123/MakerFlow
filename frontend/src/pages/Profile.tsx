@@ -19,6 +19,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ROUTES } from '@/constants/routes';
+import { API_ROUTES } from '@/constants/api-routes';
 
 // Ikonki
 import { User, Lock, LogOut, ChevronRight } from "lucide-react";
@@ -45,7 +47,7 @@ const Profile = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await api.get('/auth/me');
+      const response = await api.get(API_ROUTES.ME.ME);
       setUsername(response.data.username);
       setTempUsername(response.data.username);
     } catch (error) {
@@ -55,7 +57,7 @@ const Profile = () => {
 
   const handleUpdateUsername = async () => {
     try {
-      await api.patch('/users/me/username', { username: tempUsername });
+      await api.patch(API_ROUTES.ME.EDIT_USERNAME, { username: tempUsername });
       setUsername(tempUsername);
       setIsUserModalOpen(false);
     } catch (error) {
@@ -70,7 +72,7 @@ const Profile = () => {
     }
 
     try {
-      await api.patch('/users/me/password', {
+      await api.patch(API_ROUTES.ME.EDIT_PASSWORD, {
         oldPass: passData.oldPassword,
         newPass: passData.newPassword
       });
@@ -204,7 +206,7 @@ const Profile = () => {
               className="flex items-center gap-4 p-4 hover:bg-red-50 transition-colors cursor-pointer group"
               onClick={() => {
                 logout();
-                navigate('/login');
+                navigate(ROUTES.LOGIN);
               }}
             >
               <div className="p-2 bg-red-100 text-red-600 rounded-full group-hover:bg-red-200">
