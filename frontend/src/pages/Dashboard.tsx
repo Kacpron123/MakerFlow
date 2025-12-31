@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Package, Database } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 import { API_ROUTES } from '@/constants/api-routes';
+import api from '../api/axios';
 
 const Dashboard = () => {
   const navigate = useNavigate();
