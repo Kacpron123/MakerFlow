@@ -13,6 +13,7 @@ import { API_ROUTES } from '@/constants/api-routes';
 interface Product {
   id: number;
   name: string;
+  price: number;
   stock: number;
 }
 
@@ -28,10 +29,10 @@ const Inventory = () => {
     const res = await api.get(API_ROUTES.PRODUCTS.GET_ALL);
     setProducts(res.data);
   };
-
+//   TODO backend stock
   const updateStock = async (id: number, amount: number) => {
     try {
-      await api.patch(API_ROUTES.PRODUCTS.STOCK(id), { increment: amount });
+      await api.patch(API_ROUTES.PRODUCTS.STOCK(id), { stock_add: amount });
       setProducts(prev => prev.map(p => 
         p.id === id ? { ...p, stock: p.stock + amount } : p
       ));
@@ -96,7 +97,8 @@ const Inventory = () => {
                       <Button size="sm" variant="outline" onClick={() => {
                         const amount=product.stock < 5 ? -product.stock : -5;
                         updateStock(product.id, amount);
-                        }}>-5</Button>
+                        }}
+                        disabled={product.stock ==0}>-5</Button>
                       <Button size="sm" variant="outline" onClick={() => updateStock(product.id, -1)} disabled={product.stock < 1}>-1</Button>
                       <Button size="sm" variant="outline" onClick={() => updateStock(product.id, 1)}>+1</Button>
                       <Button size="sm" variant="outline" onClick={() => updateStock(product.id, 5)}>+5</Button>
