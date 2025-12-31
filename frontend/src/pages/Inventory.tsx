@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, } from 'lucide-react';
 import { API_ROUTES } from '@/constants/api-routes';
+import { useTitle } from '@/hooks/useTitle';
 
 interface Product {
   id: number;
@@ -18,6 +19,7 @@ interface Product {
 }
 
 const Inventory = () => {
+  useTitle('Inventory');
   const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 

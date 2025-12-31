@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +16,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { DialogTrigger } from '@radix-ui/react-dialog';
+import { useNavigate } from 'react-router-dom';
+import { Package } from 'lucide-react';
 import { API_ROUTES } from '@/constants/api-routes';
-import { useTitle } from '@/hooks/useTitle';
 
 interface Product {
   id: number;
@@ -27,7 +28,10 @@ interface Product {
 }
 
 const Products = () => {
-  useTitle('Products');
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+  });
   const [products, setProducts] = useState<Product[]>([]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -68,7 +72,7 @@ const Products = () => {
     if (!editingProduct) return;
     const { id, ...productData } = editingProduct;
     try {
-      await api.patch(API_ROUTES.PRODUCTS.DETAIL(id), productData);
+      await api.patch(`/products/${editingProduct.id}`, productData);
       setIsEditModalOpen(false);
       fetchProducts();
     } catch (error) {
@@ -79,7 +83,7 @@ const Products = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await api.delete(API_ROUTES.PRODUCTS.DETAIL(id));
+        await api.delete(`/products/${id}`);
         fetchProducts();
       } catch (error) {
         console.error('Failed to delete product', error);
@@ -91,8 +95,25 @@ const Products = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-900">Products</h1>
+          <p className="text-slate-500">Lets manage our products!</p>
+        </div>
+        {/* TODO stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <Card className="border-l-4 border-l-indigo-600">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-500">Wszystkie Produkty</CardTitle>
+              <Package className="h-4 w-4 text-slate-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalProducts}</div>
+              <p className="text-xs text-slate-400">+2 w tym tygodniu</p>
+            </CardContent>
+          </Card>
+        </div>
         
-        {/* products */}
+        {/*  */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Your Products</h1>
           <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
