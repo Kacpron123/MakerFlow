@@ -4,7 +4,8 @@ CREATE TYPE role AS ENUM ('USER', 'ADMIN');
 CREATE TABLE users (
    user_id SERIAL PRIMARY KEY,
    username TEXT NOT NULL UNIQUE,
-   password_hash TEXT NOT NULL
+   password_hash TEXT NOT NULL,
+   created_at TIMESTAMP DEFAULT NOW()
    );
 CREATE TABLE groups (
    group_id SERIAL PRIMARY KEY,
@@ -21,21 +22,21 @@ CREATE TABLE products (
    group_id INT REFERENCES groups(group_id) ON DELETE SET NULL,
    user_id INT REFERENCES users(user_id) ON DELETE CASCADE
    );
-CREATE TABLE other_transaction (
+CREATE TABLE transactions (
    transaction_id SERIAL PRIMARY KEY,
-   user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-   type TEXT NOT NULL,
-   description TEXT,
-   amount NUMERIC(10,2) NOT NULL,
-   transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-   );
-CREATE TABLE payments (
-   payment_id SERIAL PRIMARY KEY,
-   user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-   -- commission_id INT, -- for commision table commissions
-   payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   amount NUMERIC(10,2) NOT NULL
-   );
+   user_id INTEGER REFERENCES users(user_id),
+   total_price DECIMAL(10, 2) NOT NULL,
+
+   created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE sale_items (
+   sale_id SERIAL PRIMARY KEY,
+   transaction_id INTEGER REFERENCES transactions(transaction_id) ON DELETE CASCADE,
+   product_id INTEGER REFERENCES products(product_id),
+   quantity INTEGER NOT NULL,
+   price_at_sale DECIMAL(10, 2) NOT NULL
+);
 CREATE TABLE tokens (
 	token_id SERIAL primary key,
 	user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
@@ -47,20 +48,3 @@ CREATE TABLE roles(
    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
    role_type role
    );
-
--- methods:
-CREATE OR REPLACE FUNCTION get_payments(
-   user_id int,
-   from_date timestamp,
-   to_date timestamp
-   ) RETURNS TABLE (
-      payment_id int,
-      payment_date timestamp,
-      amount numeric(10,2)
-   ) AS '
-   SELECT payment_id, payment_date, amount
-   FROM payments p
-   WHERE p.user_id = $1
-   AND p.payment_date >= $2
-   AND p.payment_date <= $3
-   ' LANGUAGE sql;

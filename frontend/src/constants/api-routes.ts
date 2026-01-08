@@ -13,4 +13,7 @@ export const API_ROUTES = {
     DETAIL: (id: number) => `/products/${id}`,
     STOCK: (id: number) => `/products/${id}/stock`,
   },
+  SALES:{
+    CREATE: '/sales'
+  },
 } as const;
