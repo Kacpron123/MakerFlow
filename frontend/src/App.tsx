@@ -8,6 +8,7 @@ import {
   Profile,
   Products,
   Inventory,
+  Sales
 } from "@/pages";
 import { ROUTES } from '@/constants/routes';
 
@@ -40,6 +41,7 @@ function App() {
       <Route path={ROUTES.DASHBOARD.ROOT} element={<Dashboard />} />
       <Route path={ROUTES.DASHBOARD.PRODUCTS} element={<Products />} />
       <Route path={ROUTES.DASHBOARD.INVENTORY} element={<Inventory />} />
+      <Route path={ROUTES.DASHBOARD.SALES} element={<Sales />} />
       <Route path={ROUTES.PROFILE} element={<Profile />} />
     </Route>
   </Routes>

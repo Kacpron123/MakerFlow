@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Package, Database } from 'lucide-react';
+import { ArrowRight, Package, Database, PiggyBank } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 import { API_ROUTES } from '@/constants/api-routes';
 import api from '../api/axios';
@@ -70,7 +70,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Link do Historii Sprzedaży */}
+          {/* inventory */}
           <Card 
             className="group hover:border-indigo-600 transition-all cursor-pointer"
             onClick={() => navigate(ROUTES.DASHBOARD.INVENTORY)}
@@ -81,6 +81,23 @@ const Dashboard = () => {
               </div>
               <CardTitle>Inventory</CardTitle>
               <CardDescription>Manage inventory.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-end">
+              <ArrowRight size={20} className="text-slate-300 group-hover:text-indigo-600 transition-colors" />
+            </CardContent>
+          </Card>
+
+          {/* sales */}
+          <Card 
+            className="group hover:border-indigo-600 transition-all cursor-pointer"
+            onClick={() => navigate(ROUTES.DASHBOARD.SALES)}
+          >
+            <CardHeader>
+              <div className="p-3 w-fit bg-indigo-50 text-indigo-600 rounded-lg mb-2 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                <PiggyBank size={24} />
+              </div>
+              <CardTitle>Sales</CardTitle>
+              <CardDescription>Manage sales.</CardDescription>
             </CardHeader>
             <CardContent className="flex justify-end">
               <ArrowRight size={20} className="text-slate-300 group-hover:text-indigo-600 transition-colors" />

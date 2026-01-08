@@ -7,6 +7,10 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private pool: Pool;
 
   constructor(private configService: ConfigService) {}
+  
+  async getClient() {
+    return await this.pool.connect();
+  }
 
   async onModuleInit() {
     //using variable from docker-compose

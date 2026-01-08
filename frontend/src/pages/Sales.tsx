@@ -1,45 +1,32 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import Navbar from '../components/Navbar';
-
-// Shadcn UI
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { DialogTrigger } from '@radix-ui/react-dialog';
-import { useNavigate } from 'react-router-dom';
-import { Package } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ShoppingCart, Plus, Minus, Trash2, Banknote, Search, Badge } from 'lucide-react';
 import { API_ROUTES } from '@/constants/api-routes';
+import { useTitle } from '@/hooks/useTitle';
+import { toast } from "sonner";
 
 interface Product {
   id: number;
   name: string;
   price: number;
-  group_id?: number;
+  stock: number;
 }
 
-const Products = () => {
-  const navigate = useNavigate();
-  const [stats, setStats] = useState({
-    totalProducts: 0,
-  });
+interface CartItem extends Product {
+  quantity: number;
+}
+
+const Sales = () => {
+  useTitle('Solds');
   const [products, setProducts] = useState<Product[]>([]);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    price: 0,
-  });
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [search, setSearch] = useState('');
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -49,195 +36,178 @@ const Products = () => {
       const response = await api.get(API_ROUTES.PRODUCTS.GET_ALL);
       setProducts(response.data);
     } catch (error) {
-      console.error('Failed to fetch products', error);
+      toast.error("Unable to find any products in inventory");
     }
   };
 
-  const handleCreate = async () => {
-  try {
-    await api.post(API_ROUTES.PRODUCTS.CREATE, newProduct);
-    setIsCreateModalOpen(false);
-    setNewProduct({ name: '', price: 0 });
-    fetchProducts();
-  } catch (error) {
-    console.error('Failed to create product', error);
-  }
-  };
-  const handleEditClick = (product: Product) => {
-    setEditingProduct({ ...product });
-    setIsEditModalOpen(true);
+  const addToCart = (product: Product) => {
+    if (product.stock <= 0) {
+      toast.error("No product in inventory!");
+      return;
+    }
+
+    setCart(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        updateQuantity(product.id, 1);
+        return prev;
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
   };
 
-  const handleUpdate = async () => {
-    if (!editingProduct) return;
-    const { id, ...productData } = editingProduct;
+  const removeFromCart = (id: number) => {
+    setCart(prev => prev.filter(item => item.id !== id));
+  };
+
+  const updateQuantity = (id: number, delta: number) => {
+    setCart(prev => prev.map(item => {
+      if (item.id === id) {
+        if(delta>0 && item.stock <= item.quantity)
+          return item;
+        const newQty = item.quantity + delta;
+        return newQty > 0 ? { ...item, quantity: newQty } : item;
+      }
+      return item;
+    }));
+  };
+
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  const handleSale = async () => {
     try {
-      await api.patch(`/products/${editingProduct.id}`, productData);
-      setIsEditModalOpen(false);
+      const payload = {
+        items: cart.map(item => ({
+          id: item.id,
+          quantity: item.quantity,
+        })),
+      };
+      await api.post(API_ROUTES.SALES.CREATE, payload);
+      
+      toast.success("Sold saved!", {
+        description: `Total: ${totalPrice} $`,
+      });
+      setCart([]);
       fetchProducts();
     } catch (error) {
-      console.error('Failed to update product', error);
+      toast.error("Failed to finalize sale during given time");
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        await api.delete(`/products/${id}`);
-        fetchProducts();
-      } catch (error) {
-        console.error('Failed to delete product', error);
-      }
-    }
-  };
+  const filteredProducts = products.filter(p => 
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <Navbar />
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Products</h1>
-          <p className="text-slate-500">Lets manage our products!</p>
-        </div>
-        {/* TODO stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <Card className="border-l-4 border-l-indigo-600">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-500">Wszystkie Produkty</CardTitle>
-              <Package className="h-4 w-4 text-slate-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalProducts}</div>
-              <p className="text-xs text-slate-400">+2 w tym tygodniu</p>
-            </CardContent>
-          </Card>
-        </div>
-        
-        {/*  */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Your Products</h1>
-          <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-indigo-600 hover:bg-indigo-700">
-              + New Product
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent> {/*form create product*/}
-            <DialogHeader>
-              <DialogTitle>Add New Product</DialogTitle>
-              <DialogDescription>Enter the details for your new product.</DialogDescription>
-            </DialogHeader>
-            
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="new-name">Product Name</Label>
+      <div className="max-w-400 mx-auto p-4 md:p-6 lg:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* left side: products */}
+          {/* TODO tab with products with 0 stock */}
+          <div className="lg:col-span-8 space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <h1 className="text-3xl font-bold tracking-tight">Shopping Terminal</h1>
+              <div className="relative w-full md:w-72">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input 
-                  id="new-name" 
-                  placeholder="Name"
-                  value={newProduct.name}
-                  onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="new-price">Price</Label>
-                <Input 
-                  id="new-price" 
-                  type="number"
-                  placeholder="0.00"
-                  value={newProduct.price || ''}
-                  onChange={(e) => setNewProduct({...newProduct, price: Number(e.target.value)})}
+                  placeholder="Szukaj produktu..." 
+                  className="pl-10 bg-white" 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
             </div>
 
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>Cancel</Button>
-              <Button onClick={handleCreate}>Create Product</Button>
-            </DialogFooter>
-          </DialogContent>
-          </Dialog>
-        </div>
-
-
-        {products.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg border-2 border-dashed">
-            <p className="text-gray-500">No products found.</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+              {filteredProducts.map(product => (
+                <Card 
+                  key={product.id} 
+                  className="cursor-pointer hover:border-indigo-500 transition-all active:scale-95"
+                  onClick={() => addToCart(product)}
+                >
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-sm truncate">{product.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    <p className="text-xl font-black text-indigo-600">{product.price} $</p>
+                    <p className="text-xs text-slate-400 mt-1">Stock: {product.stock} items</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => (
-              <Card key={product.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <CardTitle>{product.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold text-indigo-600">${product.price}</p>
-                  {product.group_id && (
-                    <p className="text-sm text-gray-400 mt-2">Group ID: {product.group_id}</p>
+
+          {/* right side: CART */}
+          <div className="lg:col-span-4">
+            <Card className="sticky top-24 h-[calc(100vh-120px)] flex flex-col shadow-xl border-2 border-indigo-100">
+              {/* bar */}
+              <CardHeader className="bg-indigo-600 text-white rounded-t-lg">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="flex items-center gap-2">
+                    <ShoppingCart size={20} /> Card
+                  </CardTitle>
+                  <Badge >{cart.length} pozycji</Badge>
+                </div>
+              </CardHeader>
+
+              {/* card container */}
+              <CardContent className="grow p-0 overflow-hidden">
+                <ScrollArea className="h-full p-4">
+                  {cart.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-40 text-slate-400">
+                      <ShoppingCart size={48} className="mb-2 opacity-20" />
+                      <p>Card is empty</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {cart.map(item => (
+                        <div key={item.id} className="flex items-center justify-between border-b pb-4">
+                          <div className="grow">
+                            <p className="font-bold text-sm truncate w-40">{item.name}</p>
+                            <p className="text-xs text-indigo-600 font-bold">{item.price} $</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => updateQuantity(item.id, -1)}>
+                              <Minus size={14} />
+                            </Button>
+                            <span className="font-bold w-4 text-center">{item.quantity}</span>
+                            <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => updateQuantity(item.id, 1)}>
+                              <Plus size={14} />
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500" onClick={() => removeFromCart(item.id)}>
+                              <Trash2 size={14} />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   )}
-                </CardContent>
-                <CardFooter className="flex justify-end gap-2 bg-gray-50/50 pt-4">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleEditClick(product)}
-                  >
-                    Edit
-                  </Button>
-                  <Button 
-                    variant="destructive" 
-                    size="sm" 
-                    onClick={() => handleDelete(product.id)}
-                  >
-                    Delete
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+                </ScrollArea>
+              </CardContent>
+
+              {/* total cost and sold button */}
+              <CardFooter className="flex flex-col border-t p-6 gap-4 bg-slate-50">
+                <div className="flex justify-between w-full text-xl font-black uppercase">
+                  <span>Total:</span>
+                  <span>{totalPrice.toFixed(2)} $</span>
+                </div>
+                <Button 
+                  className="w-full h-16 text-xl font-bold bg-green-600 hover:bg-green-700 shadow-lg"
+                  disabled={cart.length === 0}
+                  onClick={handleSale}
+                >
+                  <Banknote className="mr-2" /> SOLD
+                </Button>
+              </CardFooter>
+            </Card>
           </div>
-        )}
 
-        {/* editing product */}
-        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Product</DialogTitle>
-              <DialogDescription>Update the product details below.</DialogDescription>
-            </DialogHeader>
-            
-            {editingProduct && (
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Product Name</Label>
-                  <Input 
-                    id="name" 
-                    value={editingProduct.name}
-                    onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="price">Price</Label>
-                  <Input 
-                    id="price" 
-                    type="number"
-                    value={editingProduct.price}
-                    onChange={(e) => setEditingProduct({...editingProduct, price: Number(e.target.value)})}
-                  />
-                </div>
-              </div>
-            )}
-
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
-              <Button onClick={handleUpdate}>Save Changes</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
+        </div>
       </div>
     </div>
   );
 };
 
-export default Products;
+export default Sales;

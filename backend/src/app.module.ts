@@ -10,6 +10,7 @@ import { DatabaseModule } from './database/database.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ProductsModule } from './products/products.module';
+import { SalesModule } from './sales/sales.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { ProductsModule } from './products/products.module';
     AuthModule,
     UsersModule,
     DatabaseModule,
-    ProductsModule
+    ProductsModule,
+    SalesModule
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
