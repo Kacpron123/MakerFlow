@@ -5,8 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Package, Database, PiggyBank } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
-import { API_ROUTES } from '@/constants/api-routes';
-import api from '../api/axios';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -20,7 +18,7 @@ const Dashboard = () => {
   const fetchStats = async () => {
     try {
       // TODO products/stats
-      const response = await api.get(API_ROUTES.STATS);
+      // const response = await api.get(API_ROUTES.STATS);
       setStats({totalProducts: 0});
     } catch (error) {
       console.error('Failed to fetch products', error);
