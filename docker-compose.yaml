@@ -4,8 +4,6 @@ services:
     container_name: mf_frontend
     depends_on:
       - backend
-    ports:
-      - 80:80
     
   backend:
     build: ./backend
@@ -16,6 +14,9 @@ services:
     environment:
       DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
   db:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
     image: postgres:14-alpine
     container_name: mf_db
     restart: always
@@ -24,12 +25,13 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    ports:
+      - "127.0.0.1:5432:5432"
 volumes:
   postgres_data:

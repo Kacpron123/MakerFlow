@@ -1,8 +1,8 @@
 import axios from 'axios';
 import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
-const BACKEND_URL: string = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-const API_URL: string = `${BACKEND_URL}/api`;
+// nginx guarante that BACKEND_URL is same as frontend host
+const API_URL: string = `/api`;
 
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,
