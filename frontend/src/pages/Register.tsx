@@ -6,17 +6,43 @@ import { ROUTES } from '@/constants/routes';
 const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
+
+  const [fieldErrors, setFieldErrors] = useState<{username?: string, password2?: string}>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const success = await register(username, password);
-    if (success) {
-      navigate(ROUTES.DASHBOARD.ROOT, { replace: true });
-    } else {
-      alert('Registration failed');
+    setFieldErrors({});
+
+    if (password !== password2) {
+      setFieldErrors({ password2: "Passwords do not match" });
+      return;
     }
+    
+    setIsSubmitting(true);
+    try{
+      const success = await register(username, password);
+      if (success) {
+        navigate(ROUTES.DASHBOARD.ROOT, { replace: true });
+      } else {
+        setFieldErrors({ username: "Registration failed" });
+      }
+    } catch(err){
+      setFieldErrors({ username: "Registration failed. Try again later." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const inputClass = (hasError: boolean, position: 'top' | 'mid' | 'bot') => {
+    const base = "appearance-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm";
+    const border = hasError ? "border-red-500 z-20" : "border-gray-300";
+    const rounded = position === 'top' ? "rounded-t-md" : position === 'bot' ? "rounded-b-md" : "";
+    return `${base} ${border} ${rounded}`;
   };
 
   return (
@@ -27,35 +53,54 @@ const Register = () => {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
-            <div>
+            {/* USERNAME */}
+            <div className="relative">
               <input
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className={inputClass(!!fieldErrors.username, 'top')}
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
+              {fieldErrors.username && (
+                <span className="text-red-500 text-xs absolute right-2 top-2.5">★ {fieldErrors.username}</span>
+              )}
             </div>
-            <div>
+
+            {/* PASSWORD */}
+            <input
+              type="password"
+              required
+              className={inputClass(false, 'mid')}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            {/* CONFIRM PASSWORD */}
+            <div className="relative">
               <input
                 type="password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                className={inputClass(!!fieldErrors.password2, 'bot')}
+                placeholder="repeat Password"
+                value={password2}
+                onChange={(e) => setPassword2(e.target.value)}
               />
+              {fieldErrors.password2 && (
+                <span className="text-red-500 text-xs absolute right-2 top-2.5">★ {fieldErrors.password2}</span>
+              )}
             </div>
           </div>
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Register
-            </button>
-          </div>
+
+          <button
+            disabled={isSubmitting}
+            type="submit"
+            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400"
+          >
+            {isSubmitting ? 'Registration...' : 'Register'}
+          </button>
         </form>
       </div>
     </div>
