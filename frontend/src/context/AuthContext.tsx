@@ -52,7 +52,10 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (username: string, password: string): Promise<boolean> => {
     try {
-      await api.post(API_ROUTES.REGISTER, { username, password });
+      const response = await api.post(API_ROUTES.REGISTER, { username, password });
+      const { access_token } = response.data;
+      localStorage.setItem('token', access_token);
+      setUser({ username });
       return true;
     } catch (error) {
       console.error('Registration failed', error);
