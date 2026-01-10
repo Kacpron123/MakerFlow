@@ -1,0 +1,11 @@
+# Node modules local
+node_modules
+npm-debug.log
+yarn-error.log
+
+# build file local
+dist
+
+# system files
+.DS_Store
+.env
