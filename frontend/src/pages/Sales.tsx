@@ -49,8 +49,13 @@ const Sales = () => {
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
-        updateQuantity(product.id, 1);
-        return prev;
+        return prev.map(item => {
+        if (item.id === product.id) {
+          if (item.quantity >= item.stock) return item;
+          return { ...item, quantity: item.quantity + 1 };
+        }
+        return item;
+      });
       }
       return [...prev, { ...product, quantity: 1 }];
     });
