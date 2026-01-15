@@ -12,6 +12,7 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     
     @IsNumber()
     @IsOptional()
+    @IsMin(0)
     @Type(() => Number)
     price?: number;
     

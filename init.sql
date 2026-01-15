@@ -1,5 +1,3 @@
--- enums
-CREATE TYPE role AS ENUM ('USER', 'ADMIN');
 -- tables
 CREATE TABLE users (
    user_id SERIAL PRIMARY KEY,
@@ -44,7 +42,13 @@ CREATE TABLE tokens (
    expires_at TIMESTAMP NOT NULL
    );
 
-CREATE TABLE roles(
-   user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-   role_type role
-   );
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE user_roles (
+   user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+   role_id INTEGER REFERENCES roles(role_id) ON DELETE CASCADE,
+   PRIMARY KEY (user_id, role_id)
+);
