@@ -9,7 +9,6 @@ CREATE TABLE groups (
    group_id SERIAL PRIMARY KEY,
    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
    name TEXT NOT NULL,
-   stock_number INT DEFAULT 0,
    parent_group_id INT REFERENCES groups(group_id) ON DELETE SET NULL,
    description TEXT
    );
@@ -17,6 +16,7 @@ CREATE TABLE products (
    product_id SERIAL PRIMARY KEY,
    name TEXT NOT NULL,
    base_price NUMERIC(10,2),
+   stock_number INT DEFAULT 0,
    group_id INT REFERENCES groups(group_id) ON DELETE SET NULL,
    user_id INT REFERENCES users(user_id) ON DELETE CASCADE
    );
