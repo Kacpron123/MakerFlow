@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Package, Database, PiggyBank } from 'lucide-react';
+import { ArrowRight, Package, Database, PiggyBank, MapPinned } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 
 const Dashboard = () => {
@@ -102,23 +102,28 @@ const Dashboard = () => {
             </CardContent>
           </Card>
           
-
-          {/* Link do Ustawień Konta */}
-          {/* <Card 
-            className="group hover:border-slate-900 transition-all cursor-pointer"
-            onClick={() => navigate(ROUTES.PROFILE)}
+          {/* Events */}
+          <Card 
+            className="group "
+            // onClick={() => navigate()}
           >
+            <span className="absolute top-2 right-2 bg-yellow-400 text-white text-xs font-semibold px-2 py-1 rounded-full">
+              Coming Soon
+            </span>
             <CardHeader>
-              <div className="p-3 w-fit bg-slate-100 text-slate-900 rounded-lg mb-2 group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                <Settings size={24} />
+              <div className="p-3 w-fit bg-indigo-50 text-indigo-600 rounded-lg mb-2 transition-colors">
+                <MapPinned size={24} />
               </div>
-              <CardTitle>Ustawienia</CardTitle>
-              <CardDescription>Zmień hasło, nazwę użytkownika lub wyloguj się.</CardDescription>
+              <CardTitle>Events</CardTitle>
+              <CardDescription>
+                Manage events.
+                <span className="text-sm text-yellow-500 font-semibold">Coming Soon</span>
+                </CardDescription>
             </CardHeader>
-            <CardContent className="flex justify-end">
-              <ArrowRight size={20} className="text-slate-300 group-hover:text-slate-900 transition-colors" />
-            </CardContent>
-          </Card> */}
+            {/* <CardContent className="flex justify-end">
+              <ArrowRight size={20} className="text-slate-300 group-hover:text-indigo-600 transition-colors" />
+            </CardContent> */}
+          </Card>
 
         </div>
       </div>
