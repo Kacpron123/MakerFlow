@@ -23,6 +23,7 @@ interface Product {
   id: number;
   name: string;
   price: number;
+  stock?: number;
   group_id?: number;
 }
 
@@ -66,9 +67,13 @@ const Products = () => {
 
   const handleUpdate = async () => {
     if (!editingProduct) return;
-    const { id, ...productData } = editingProduct;
+    const payload ={
+      name: editingProduct.name,
+      price: editingProduct.price,
+    };
+
     try {
-      await api.patch(API_ROUTES.PRODUCTS.DETAIL(id), productData);
+      await api.patch(API_ROUTES.PRODUCTS.DETAIL(editingProduct.id), payload);
       setIsEditModalOpen(false);
       fetchProducts();
     } catch (error) {
