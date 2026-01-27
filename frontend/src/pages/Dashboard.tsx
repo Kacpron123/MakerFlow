@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,22 +7,6 @@ import { ROUTES } from '@/constants/routes';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [stats, setStats] = useState({
-    totalProducts: 0,
-  });
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
-    try {
-      // TODO products/stats
-      // const response = await api.get(API_ROUTES.STATS);
-      setStats({totalProducts: 0});
-    } catch (error) {
-      console.error('Failed to fetch products', error);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -95,9 +78,6 @@ const Dashboard = () => {
             className="group "
             // onClick={() => navigate()}
           >
-            <span className="absolute top-2 right-2 bg-yellow-400 text-white text-xs font-semibold px-2 py-1 rounded-full">
-              Coming Soon
-            </span>
             <CardHeader>
               <div className="p-3 w-fit bg-indigo-50 text-indigo-600 rounded-lg mb-2 transition-colors">
                 <MapPinned size={24} />
