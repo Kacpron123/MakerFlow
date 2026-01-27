@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,22 +7,6 @@ import { ROUTES } from '@/constants/routes';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [stats, setStats] = useState({
-    totalProducts: 0,
-  });
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
-    try {
-      // TODO products/stats
-      // const response = await api.get(API_ROUTES.STATS);
-      setStats({totalProducts: 0});
-    } catch (error) {
-      console.error('Failed to fetch products', error);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -34,21 +17,9 @@ const Dashboard = () => {
           <p className="text-slate-500">Welcome again! lets manage our trash.</p>
         </div>
         {/* TODO stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <Card className="border-l-4 border-l-indigo-600">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-500">All products</CardTitle>
-              <Package className="h-4 w-4 text-slate-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalProducts}</div>
-              <p className="text-xs text-slate-400">+2 this week</p>
-            </CardContent>
-          </Card>
-        </div>
+        
 
         {/* navigation */}
-        <h2 className="text-xl font-semibold mb-6">Zarządzanie</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {/* Link to products */}
