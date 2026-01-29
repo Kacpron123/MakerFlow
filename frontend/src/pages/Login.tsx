@@ -19,6 +19,13 @@ const Login = () => {
     }
   };
 
+  // const inputClass = (hasError: boolean, position: 'top' | 'mid' | 'bot') => {
+  //   const base = "appearance-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm";
+  //   const border = hasError ? "border-red-500 z-20" : "border-gray-300";
+  //   const rounded = position === 'top' ? "rounded-t-md" : position === 'bot' ? "rounded-b-md" : "";
+  //   return `${base} ${border} ${rounded}`;
+  // };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">

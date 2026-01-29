@@ -8,7 +8,11 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
 
-  const [fieldErrors, setFieldErrors] = useState<{username?: string, password2?: string}>({});
+  const [fieldErrors, setFieldErrors] = useState<{
+    username?: string, 
+    password?: string,
+    password2?: string
+  }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { register } = useAuth();
@@ -18,11 +22,15 @@ const Register = () => {
     e.preventDefault();
     setFieldErrors({});
 
+    if(password.length < 8){
+      setFieldErrors({ password: "at least 8 characters" });
+      return;
+    }
     if (password !== password2) {
       setFieldErrors({ password2: "Passwords do not match" });
       return;
     }
-    
+
     setIsSubmitting(true);
     try{
       const success = await register(username, password);
@@ -69,14 +77,21 @@ const Register = () => {
             </div>
 
             {/* PASSWORD */}
-            <input
-              type="password"
-              required
-              className={inputClass(false, 'mid')}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="relative">
+              <input
+                type="password"
+                required
+                className={inputClass(!!fieldErrors.password, 'mid')}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              {fieldErrors.password && (
+                <span className="text-red-500 text-xs absolute right-2 top-2.5">
+                  ★ {fieldErrors.password}
+                </span>
+              )}
+            </div>
 
             {/* CONFIRM PASSWORD */}
             <div className="relative">
