@@ -32,24 +32,6 @@ export class UsersService {
     await this.databaseService.query(query, [newUsername, userId]);
     return { message: 'Username updated successfully' };
   }
-  async changePassword(userId: number, oldPass: string, newPass: string) {
-    const userRes = await this.databaseService.query(
-      'SELECT password_hash FROM users WHERE user_id = $1', 
-      [userId]
-    );
-    const user = userRes[0];
-    const isMatch = await bcrypt.compare(oldPass, user.password_hash);
-    if (!isMatch) {
-      throw new UnauthorizedException('The password is incorrect');
-    }
-    const hashedNewPass = await bcrypt.hash(newPass, 10);
-    await this.databaseService.query(
-      'UPDATE users SET password_hash = $1 WHERE user_id = $2',
-      [hashedNewPass, userId]
-    );
-
-    return { message: 'Password updated successfully' };
-  }
 
   async findOne(username: string): Promise<any | undefined>;
   async findOne(id: number): Promise<any | undefined>;

@@ -28,12 +28,6 @@ export class UsersController {
     return this.usersService.changeUsername(userId, body.username);
   }
 
-  @Patch('me/password')
-  @UseGuards(AuthGuard('session-token'))
-  async updatePassword(@Request() req, @Body() body: { oldPass: string, newPass: string }) {
-    const userId = req.user.user_id;
-    return this.usersService.changePassword(userId, body.oldPass, body.newPass);
-  }
   
   // TODO admin
   // @Delete(':id')

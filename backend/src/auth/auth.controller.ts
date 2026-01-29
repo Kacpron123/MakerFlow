@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request, Body, Get } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body, Get, Patch } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -52,6 +52,12 @@ export class AuthController {
       message: 'Token refreshed successfully. Please use the new token to authenticate.',
       ...newTokenPayload
     };
+  }
+  @Patch('me/password')
+  @UseGuards(AuthGuard('session-token'))
+  async updatePassword(@Request() req, @Body() body: { oldPass: string, newPass: string }) {
+    const userId = req.user.user_id;
+    return this.authService.changePassword(userId, body.oldPass, body.newPass);
   }
 
 

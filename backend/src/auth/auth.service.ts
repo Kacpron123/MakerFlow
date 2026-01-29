@@ -1,7 +1,8 @@
-import { Injectable, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { DatabaseService } from '@database/database.service';
 import { RegisterDto } from './dto/register.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -48,6 +49,25 @@ export class AuthService {
 
     return this.issueToken(newUser);
   }
+  async changePassword(userId: number, oldPass: string, newPass: string) {
+    const userRes = await this.databaseService.query(
+      'SELECT password_hash FROM users WHERE user_id = $1', 
+      [userId]
+    );
+    const user = userRes[0];
+    const isMatch = await bcrypt.compare(oldPass, user.password_hash);
+    if (!isMatch) {
+      throw new UnauthorizedException('The password is incorrect');
+    }
+    const hashedNewPass = await bcrypt.hash(newPass, 10);
+    await this.databaseService.query(
+      'UPDATE users SET password_hash = $1 WHERE user_id = $2',
+      [hashedNewPass, userId]
+    );
+
+    return { message: 'Password updated successfully' };
+  }
+
   async revokeToken(token: string): Promise<void> {
     await this.usersService.removeSessionToken(token);
   }
