@@ -32,4 +32,5 @@ docker-compose up
 Development Mode (with Hot-Reload): If you wish to start the program with hot-reload enabled for faster development, use:
 ```
 docker-compose -f .\docker-compose.dev.yaml up
+echo 'run on https://localhost:5137'
 ```
