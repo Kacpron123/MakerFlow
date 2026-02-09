@@ -40,11 +40,8 @@ const Navbar: FC = () => {
               </>
             ) : (
               <>
-                <Link to={ROUTES.LOGIN} className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
+                <Link to={ROUTES.LOGIN} className="ml-4 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium">
                   Login
-                </Link>
-                <Link to={ROUTES.REGISTER} className="ml-4 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-                  Register
                 </Link>
               </>
             )}
